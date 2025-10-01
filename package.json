@@ -1,7 +1,18 @@
 {
-  "name": "my-v0-project",
-  "version": "0.1.0",
+  "name": "amit-thakor-portfolio",
+  "version": "1.0.0",
   "private": true,
+  "description": "Professional portfolio website for Amit Thakor - Python Full Stack Developer & QA Engineer",
+  "author": "Amit Thakor <211250116037@gtu.edu.in>",
+  "keywords": [
+    "portfolio",
+    "python",
+    "django",
+    "react",
+    "nextjs",
+    "full-stack",
+    "qa-engineer"
+  ],
   "scripts": {
     "build": "next build",
     "dev": "next dev",

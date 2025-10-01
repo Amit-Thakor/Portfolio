@@ -39,7 +39,7 @@ export function HeroSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div
-            className={`order-2 lg:order-1 transition-all duration-1000 ${
+            className={`order-2 lg:order-1 transition-all duration-1000 hover-lift ${
               isVisible
                 ? "opacity-100 translate-x-0"
                 : "opacity-0 -translate-x-10"
@@ -97,10 +97,12 @@ export function HeroSection() {
                   Python Full Stack Developer & QA Engineer
                 </p>
                 <p className="text-lg text-muted-foreground max-w-2xl text-pretty">
-                  Enthusiastic IT graduate with expertise in Python, Django,
-                  React.js, and comprehensive software testing. I create
-                  efficient, real-world solutions with strong problem-solving
-                  and analytical skills.
+                  Enthusiastic IT graduate with passion for Full Stack
+                  Development, Python, AI/ML, and Software Testing. Skilled in
+                  creating efficient, real-world solutions with strong
+                  problem-solving, analytical, innovative, and testing
+                  expertise. Seeking a dynamic, challenging role to apply
+                  creativity, adaptability, and advanced technical skills.
                 </p>
               </div>
 
@@ -132,7 +134,7 @@ export function HeroSection() {
 
               <div className="flex items-center justify-center lg:justify-start space-x-6 pt-8">
                 <a
-                  href="https://github.com/Amit-Thakor"
+                  href="https://github.com/Anit-Thakor"
                   className="text-muted-foreground hover:text-primary transition-all duration-300 hover:scale-110"
                   target="_blank"
                   rel="noopener noreferrer"

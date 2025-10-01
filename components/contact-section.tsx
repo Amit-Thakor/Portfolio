@@ -1,14 +1,29 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
-import { Mail, Phone, MapPin, Send, MessageCircle, Clock, Sparkles, Star } from "lucide-react"
-import { useState } from "react"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Send,
+  MessageCircle,
+  Clock,
+  Sparkles,
+  Star,
+} from "lucide-react";
+import { useState } from "react";
 
 export function ContactSection() {
   const [formData, setFormData] = useState({
@@ -16,29 +31,106 @@ export function ContactSection() {
     email: "",
     subject: "",
     message: "",
-  })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitSuccess, setSubmitSuccess] = useState(false)
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
+  });
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const validateForm = () => {
+    const newErrors = {
+      name: "",
+      email: "",
+      subject: "",
+      message: "",
+    };
+
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+    } else if (formData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+
+    if (!formData.subject.trim()) {
+      newErrors.subject = "Subject is required";
+    } else if (formData.subject.trim().length < 5) {
+      newErrors.subject = "Subject must be at least 5 characters";
+    }
+
+    if (!formData.message.trim()) {
+      newErrors.message = "Message is required";
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = "Message must be at least 10 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.values(newErrors).every((error) => error === "");
+  };
+
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
-    })
-  }
+      [name]: value,
+    });
+
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: "",
+      });
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setIsSubmitting(true)
+    e.preventDefault();
 
-    // Simulate form submission
-    setTimeout(() => {
-      setIsSubmitting(false)
-      setSubmitSuccess(true)
-      setFormData({ name: "", email: "", subject: "", message: "" })
-      setTimeout(() => setSubmitSuccess(false), 5000)
-    }, 2000)
-  }
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSubmitSuccess(true);
+        setFormData({ name: "", email: "", subject: "", message: "" });
+        setErrors({ name: "", email: "", subject: "", message: "" });
+        setTimeout(() => setSubmitSuccess(false), 5000);
+      } else {
+        console.error("Form submission error:", data.error);
+        // You could show an error message to the user here
+      }
+    } catch (error) {
+      console.error("Network error:", error);
+      // You could show an error message to the user here
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <section
@@ -67,7 +159,8 @@ export function ContactSection() {
             <Sparkles className="h-8 w-8 text-purple-500 animate-pulse" />
           </div>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-            Ready to collaborate? Let's discuss your next Python project and bring your ideas to life
+            Ready to collaborate? Let's discuss your next Python project and
+            bring your ideas to life
           </p>
         </div>
 
@@ -80,7 +173,9 @@ export function ContactSection() {
                   <Mail className="h-5 w-5 mr-2" />
                   Contact Information
                 </CardTitle>
-                <CardDescription>Feel free to reach out through any of these channels</CardDescription>
+                <CardDescription>
+                  Feel free to reach out through any of these channels
+                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/50 dark:bg-slate-800/50">
@@ -89,7 +184,9 @@ export function ContactSection() {
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Email</p>
-                    <p className="text-sm text-muted-foreground">211250116037@gtu.edu.in</p>
+                    <p className="text-sm text-muted-foreground">
+                      211250116037@gtu.edu.in
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/50 dark:bg-slate-800/50">
@@ -98,7 +195,9 @@ export function ContactSection() {
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Phone</p>
-                    <p className="text-sm text-muted-foreground">+91-9974932098</p>
+                    <p className="text-sm text-muted-foreground">
+                      +91-9974932098
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-3 p-3 rounded-lg bg-white/50 dark:bg-slate-800/50">
@@ -107,7 +206,9 @@ export function ContactSection() {
                   </div>
                   <div>
                     <p className="font-medium text-foreground">Location</p>
-                    <p className="text-sm text-muted-foreground">Gandhinagar, Gujarat</p>
+                    <p className="text-sm text-muted-foreground">
+                      Gandhinagar, Gujarat
+                    </p>
                   </div>
                 </div>
               </CardContent>
@@ -124,8 +225,9 @@ export function ContactSection() {
                 <div className="flex items-start space-x-3">
                   <Star className="h-5 w-5 text-yellow-500 mt-1" />
                   <p className="text-sm text-muted-foreground">
-                    I typically respond to messages within 24 hours. For urgent Python development or testing inquiries,
-                    please call or mention "urgent" in your subject line.
+                    I typically respond to messages within 24 hours. For urgent
+                    Python development or testing inquiries, please call or
+                    mention "urgent" in your subject line.
                   </p>
                 </div>
               </CardContent>
@@ -140,7 +242,10 @@ export function ContactSection() {
                   <Send className="h-5 w-5 mr-2" />
                   Send a Message
                 </CardTitle>
-                <CardDescription>Fill out the form below and I'll get back to you as soon as possible</CardDescription>
+                <CardDescription>
+                  Fill out the form below and I'll get back to you as soon as
+                  possible
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 {submitSuccess ? (
@@ -148,16 +253,22 @@ export function ContactSection() {
                     <div className="w-16 h-16 bg-gradient-to-r from-green-400 to-cyan-400 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Send className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-2">Message Sent!</h3>
+                    <h3 className="text-lg font-semibold text-foreground mb-2">
+                      Message Sent!
+                    </h3>
                     <p className="text-muted-foreground">
-                      Thank you for reaching out. I'll get back to you within 24 hours.
+                      Thank you for reaching out. I'll get back to you within 24
+                      hours.
                     </p>
                   </div>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-2">
-                        <Label htmlFor="name" className="text-foreground font-medium">
+                        <Label
+                          htmlFor="name"
+                          className="text-foreground font-medium"
+                        >
                           Name *
                         </Label>
                         <Input
@@ -171,7 +282,10 @@ export function ContactSection() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email" className="text-foreground font-medium">
+                        <Label
+                          htmlFor="email"
+                          className="text-foreground font-medium"
+                        >
                           Email *
                         </Label>
                         <Input
@@ -188,7 +302,10 @@ export function ContactSection() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="subject" className="text-foreground font-medium">
+                      <Label
+                        htmlFor="subject"
+                        className="text-foreground font-medium"
+                      >
                         Subject *
                       </Label>
                       <Input
@@ -203,7 +320,10 @@ export function ContactSection() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="message" className="text-foreground font-medium">
+                      <Label
+                        htmlFor="message"
+                        className="text-foreground font-medium"
+                      >
                         Message *
                       </Label>
                       <Textarea
@@ -247,5 +367,5 @@ export function ContactSection() {
         </div>
       </div>
     </section>
-  )
+  );
 }

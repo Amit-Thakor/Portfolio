@@ -1,29 +1,38 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Menu, X, Code, Sparkles } from "lucide-react"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Menu, X, Code, Sparkles, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const navItems = [
   { name: "Home", href: "#home" },
   { name: "Skills", href: "#skills" },
   { name: "Projects", href: "#projects" },
   { name: "Experience", href: "#experience" },
+  { name: "Education", href: "#education" },
+  { name: "Testimonials", href: "#testimonials" },
   { name: "Resume", href: "#resume" },
   { name: "Contact", href: "#contact" },
-]
+];
 
 export function Navigation() {
-  const [isScrolled, setIsScrolled] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50)
-    }
-    window.addEventListener("scroll", handleScroll)
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <nav
@@ -41,13 +50,15 @@ export function Navigation() {
                 <Code className="h-8 w-8 text-cyan-400" />
                 <Sparkles className="h-4 w-4 text-yellow-400 absolute -top-1 -right-1 animate-pulse" />
               </div>
-              <span className="text-2xl font-bold text-cyan-300">Amit Thakor's Portfolio</span>
+              <span className="text-2xl font-bold text-cyan-300">
+                Amit Thakor's Portfolio
+              </span>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-1">
+          <div className="hidden md:flex items-center space-x-4">
+            <div className="flex items-baseline space-x-1">
               {navItems.map((item, index) => (
                 <a
                   key={item.name}
@@ -71,17 +82,51 @@ export function Navigation() {
                 </a>
               ))}
             </div>
+
+            {/* Theme Toggle */}
+            {mounted && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="text-cyan-300 hover:text-cyan-100 hover:bg-cyan-500/20 p-2"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex items-center space-x-2">
+            {mounted && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="text-cyan-300 hover:text-cyan-100 hover:bg-cyan-500/20 p-2"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5" />
+                ) : (
+                  <Moon className="h-5 w-5" />
+                )}
+              </Button>
+            )}
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-cyan-300 hover:text-cyan-100 hover:bg-cyan-500/20"
             >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </Button>
           </div>
         </div>
@@ -110,5 +155,5 @@ export function Navigation() {
         )}
       </div>
     </nav>
-  )
+  );
 }
